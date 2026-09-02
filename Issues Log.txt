@@ -13,5 +13,17 @@ split into test/val/train and train the model.
 We can only test very little unseen data in this way and couldn't confirm the performance 
 for the unknown data introduced during later interview.
 
-Splitting 1,341 adjacent frames randomly would produce misleading results. Adjacent frames are 
-almost duplicates, so nearly identical images would leak into training, validation, and testing.
+> Splitting 1,341 adjacent frames randomly would produce misleading results. Adjacent frames are 
+> almost duplicates, so nearly identical images would leak into training, validation, and testing.
+
+>> Tested lower confidence level threshold from 25 to 10. It helps but still not detecting all people.
+>> Target loss tracking when directly under the camera. Some false detection exists.
+
+>> Tested increasing resolution and shows improvement from 640 to 1280, but false detection exists 
+>> due to low confidence level threshold. Will test back 25 threshold.
+
+>> Tested resolution 1280 and confidence threshold 25. Seems like improving compared to base line (r640,c25)
+>> Should stay with r640 for now and c25 to reduce false detection.
+
+>> Fine-tune with sample data using temporal block method and 60/20/20 train/val/test.
+

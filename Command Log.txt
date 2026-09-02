@@ -81,11 +81,24 @@ python detect_staff.py --device cpu
 > Finished 1341 frames on cpu at 22.5 FPS
 > Saved annotated video to outputs\people_tracked.mp4
 
-Code	Purpose
-YOLO("yolo26n.pt")	Loads the small CPU-friendly detector
-classes=[0]	Detects only the COCO person class
-ByteTrack	Assigns a continuing ID to each person
-persist=True	Preserves tracking state between frames
-result.plot()	Draws boxes, confidence, and track IDs
---device cpu/auto/0	Selects CPU, automatic selection, or GPU 0
-try/finally	Ensures video files close correctly
+Code				Purpose
+YOLO("yolo26n.pt")		Loads the small CPU-friendly detector
+classes=[0]			Detects only the COCO person class
+ByteTrack			Assigns a continuing ID to each person
+persist=True			Preserves tracking state between frames
+result.plot()			Draws boxes, confidence, and track IDs
+--device cpu/auto/0		Selects CPU, automatic selection, or GPU 0
+try/finally			Ensures video files close correctly
+
+### Split dataset
+python prepare_dataset.py --seed 123 --output data/person_dataset_seed123
+> Video frames: 1341
+> train: 12 blocks, 96 images
+> val: 4 blocks, 32 images
+> test: 4 blocks, 32 images
+> Dataset created at: data\person_dataset_seed123
+> Review the images and annotate every visible person before training.
+
+### Freeze split manifest
+New-Item -ItemType Directory -Force configs
+Copy-Item data\person_dataset_seed123\split_manifest.json configs\split_seed123.json
