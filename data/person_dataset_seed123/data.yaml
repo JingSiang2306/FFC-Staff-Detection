@@ -1,0 +1,7 @@
+path: "C:/Users/chengjs/Desktop/FFC/FCC-Staff-Detection/data/person_dataset_seed123"
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: person

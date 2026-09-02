@@ -2,4 +2,4 @@
 data/sample.mp4
 outputs/*people_tracked*.mp4
 mp4Detail.py
-data/person_dataset*
+data/person_dataset*Reject

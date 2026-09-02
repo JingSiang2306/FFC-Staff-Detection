@@ -1,0 +1,323 @@
+{
+  "video": "data/sample.mp4",
+  "video_info": {
+    "reported_frame_count": 1341,
+    "fps": 25.0,
+    "width": 960,
+    "height": 720,
+    "decoded_frame_count": 1341,
+    "duration_seconds": 53.64
+  },
+  "method": "randomized_temporal_blocks",
+  "ratios": {
+    "train": 0.6,
+    "val": 0.2,
+    "test": 0.2
+  },
+  "seed": 123,
+  "block_count": 20,
+  "frames_per_block": 8,
+  "boundary_margin_frames": 3,
+  "blocks": [
+    {
+      "block_id": 0,
+      "start_frame": 0,
+      "end_frame": 67
+    },
+    {
+      "block_id": 1,
+      "start_frame": 68,
+      "end_frame": 134
+    },
+    {
+      "block_id": 2,
+      "start_frame": 135,
+      "end_frame": 201
+    },
+    {
+      "block_id": 3,
+      "start_frame": 202,
+      "end_frame": 268
+    },
+    {
+      "block_id": 4,
+      "start_frame": 269,
+      "end_frame": 335
+    },
+    {
+      "block_id": 5,
+      "start_frame": 336,
+      "end_frame": 402
+    },
+    {
+      "block_id": 6,
+      "start_frame": 403,
+      "end_frame": 469
+    },
+    {
+      "block_id": 7,
+      "start_frame": 470,
+      "end_frame": 536
+    },
+    {
+      "block_id": 8,
+      "start_frame": 537,
+      "end_frame": 603
+    },
+    {
+      "block_id": 9,
+      "start_frame": 604,
+      "end_frame": 670
+    },
+    {
+      "block_id": 10,
+      "start_frame": 671,
+      "end_frame": 737
+    },
+    {
+      "block_id": 11,
+      "start_frame": 738,
+      "end_frame": 804
+    },
+    {
+      "block_id": 12,
+      "start_frame": 805,
+      "end_frame": 871
+    },
+    {
+      "block_id": 13,
+      "start_frame": 872,
+      "end_frame": 938
+    },
+    {
+      "block_id": 14,
+      "start_frame": 939,
+      "end_frame": 1005
+    },
+    {
+      "block_id": 15,
+      "start_frame": 1006,
+      "end_frame": 1072
+    },
+    {
+      "block_id": 16,
+      "start_frame": 1073,
+      "end_frame": 1139
+    },
+    {
+      "block_id": 17,
+      "start_frame": 1140,
+      "end_frame": 1206
+    },
+    {
+      "block_id": 18,
+      "start_frame": 1207,
+      "end_frame": 1273
+    },
+    {
+      "block_id": 19,
+      "start_frame": 1274,
+      "end_frame": 1340
+    }
+  ],
+  "splits": {
+    "train": {
+      "block_ids": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        17
+      ],
+      "frame_indices": [
+        210,
+        215,
+        221,
+        227,
+        241,
+        249,
+        251,
+        264,
+        272,
+        279,
+        289,
+        301,
+        303,
+        310,
+        318,
+        327,
+        340,
+        346,
+        356,
+        367,
+        376,
+        379,
+        391,
+        392,
+        412,
+        417,
+        423,
+        435,
+        439,
+        450,
+        456,
+        459,
+        476,
+        486,
+        493,
+        502,
+        509,
+        513,
+        518,
+        528,
+        612,
+        615,
+        625,
+        633,
+        639,
+        647,
+        657,
+        666,
+        674,
+        688,
+        692,
+        701,
+        704,
+        713,
+        720,
+        732,
+        741,
+        753,
+        757,
+        769,
+        771,
+        784,
+        790,
+        801,
+        814,
+        818,
+        827,
+        837,
+        840,
+        847,
+        860,
+        867,
+        948,
+        956,
+        957,
+        964,
+        974,
+        983,
+        990,
+        995,
+        1011,
+        1021,
+        1029,
+        1035,
+        1045,
+        1052,
+        1060,
+        1062,
+        1143,
+        1151,
+        1162,
+        1170,
+        1174,
+        1181,
+        1194,
+        1196
+      ]
+    },
+    "val": {
+      "block_ids": [
+        0,
+        16,
+        18,
+        19
+      ],
+      "frame_indices": [
+        9,
+        16,
+        19,
+        32,
+        34,
+        46,
+        53,
+        64,
+        1076,
+        1088,
+        1094,
+        1103,
+        1106,
+        1119,
+        1123,
+        1135,
+        1210,
+        1219,
+        1227,
+        1235,
+        1241,
+        1254,
+        1255,
+        1269,
+        1281,
+        1288,
+        1293,
+        1303,
+        1313,
+        1317,
+        1324,
+        1335
+      ]
+    },
+    "test": {
+      "block_ids": [
+        1,
+        2,
+        8,
+        13
+      ],
+      "frame_indices": [
+        75,
+        79,
+        91,
+        95,
+        107,
+        112,
+        116,
+        126,
+        141,
+        145,
+        155,
+        167,
+        175,
+        178,
+        189,
+        191,
+        541,
+        552,
+        561,
+        564,
+        575,
+        582,
+        586,
+        598,
+        876,
+        887,
+        890,
+        901,
+        908,
+        914,
+        925,
+        932
+      ]
+    }
+  }
+}
