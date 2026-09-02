@@ -1,0 +1,6 @@
+# Tested project versions on Windows 11, Python 3.14.6.
+# On an NVIDIA PC, install the matching CUDA PyTorch build first.
+torch==2.13.0
+torchvision==0.28.0
+ultralytics==8.4.138
+opencv-python==5.0.0.93
