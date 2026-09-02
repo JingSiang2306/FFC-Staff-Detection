@@ -1,0 +1,17 @@
+I have tested yolo26n.pt and yolo26l.pt. 
+The yolo26l.pt able to detect more person but give long inference time.
+For now, I will test on yolo26n.pt first. 
+yolo26n.pt can only detect few people and the target staff can only be detected sometime. 
+It can detect best when the person is standing and shows full body. 
+It is more difficult to detect sitting position and when the person is right below the camara. 
+I think the root cause is due to the camara is pointing directly to the ground from the ceiling 
+but with wide angle. 
+I suggest to train the model using the sample video. 
+However, we have only one video. 
+If proceed this way, we have to slice the video to maybe 1341 frame, 
+split into test/val/train and train the model. 
+We can only test very little unseen data in this way and couldn't confirm the performance 
+for the unknown data introduced during later interview.
+
+Splitting 1,341 adjacent frames randomly would produce misleading results. Adjacent frames are 
+almost duplicates, so nearly identical images would leak into training, validation, and testing.
