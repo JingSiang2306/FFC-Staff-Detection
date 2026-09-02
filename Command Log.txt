@@ -1,0 +1,68 @@
+py --version
+> Python 3.14.6
+
+git --version
+> git version 2.55.0.windows.5
+
+mkdir FCC-Staff-Detection
+cd FCC-Staff-Detection 
+
+py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+git init
+> Initialized empty Git repository in C:/Users/chengjs/Desktop/FFC/FCC-Staff-Detection/.git/
+
+### rename current Git branch to main
+git branch -M main
+
+### Check repository status
+git status
+> On branch main
+> Your branch is up to date with 'origin/main'.
+>
+> nothing to commit, working tree clean
+
+### Check if file ignored
+git check-ignore -v .venv
+> .gitignore:1:.venv      .venv
+
+### Second PC 
+git clone https://github.com/JingSiang2306/FCC-Staff-Detection.git
+cd FCC-Staff-Detection
+py -3.14 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+
+### Upgrade the package installer
+python -m pip install --upgrade pip
+> Successfully installed pip-26.2.1
+
+### Install CPU PyTorch
+python -m pip install torch torchvision
+## torch: runs the neural-network model.
+## torchvision: supplies supporting computer-vision operations.
+> Successfully installed MarkupSafe-3.0.3 filelock-3.32.5 fsspec-2026.7.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.6.1 numpy-2.5.2 pillow-12.3.0 setuptools-84.0.0 sympy-1.14.0 torch-2.13.0 torchvision-0.28.0 typing-extensions-4.16.0
+
+### Verify CPU execution
+python -c "import torch; print('PyTorch:', torch.__version__); print('CUDA available:', torch.cuda.is_available()); print('Selected device:', 'cuda' if torch.cuda.is_available() else 'cpu')"
+> PyTorch: 2.13.0+cpu
+> CUDA available: False
+> Selected device: cpu
+
+### Install Ultralytics
+python -m pip install ultralytics
+> Successfully installed anyio-4.14.2 certifi-2026.7.22 charset_normalizer-3.5.1 contourpy-1.3.3 cycler-0.12.1 fonttools-4.64.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.19 kiwisolver-1.5.1 matplotlib-3.11.1 nvidia-ml-py-13.610.43 opencv-python-5.0.0.93 packaging-26.3 polars-1.44.1 polars-runtime-32-1.44.1 psutil-7.2.2 pyparsing-3.3.2 python-dateutil-2.9.0.post0 pyyaml-6.0.3 requests-2.34.2 six-1.17.0 ultralytics-8.4.138 ultralytics-platform-0.1.21 ultralytics-thop-2.1.6 urllib3-2.7.0
+
+### Verify everything
+python -c "import ultralytics, cv2, torch; print('Ultralytics:', ultralytics.__version__); print('OpenCV:', cv2.__version__); print('PyTorch:', torch.__version__); print('Device:', 'cuda' if torch.cuda.is_available() else 'cpu')"
+> Creating new Ultralytics Settings v0.0.8 file  
+> View Ultralytics Settings with 'yolo settings' or at 'C:\Users\chengjs\AppData\Roaming\Ultralytics\settings.json'
+> Update Settings with 'yolo settings key=value', i.e. 'yolo settings runs_dir=path/to/dir'. For help see https://docs.ultralytics.com/quickstart#ultralytics-settings.
+> Ultralytics: 8.4.138
+> OpenCV: 5.0.0
+> PyTorch: 2.13.0+cpu
+> Device: cpu
+
+
+
