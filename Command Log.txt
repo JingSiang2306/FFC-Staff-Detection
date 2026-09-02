@@ -64,5 +64,28 @@ python -c "import ultralytics, cv2, torch; print('Ultralytics:', ultralytics.__v
 > PyTorch: 2.13.0+cpu
 > Device: cpu
 
+### Create folders
+New-Item -ItemType Directory -Force data, outputs, notes
+## New-Item: The command used to create something new.
+## -ItemType Directory: Tells PowerShell to create folders, not files.
+## -Force: Allows the command to run without errors, even if those folders already exist.
 
+### Create placeholders so Git preserves the empty folders
+New-Item -ItemType File -Force data\.gitkeep, outputs\.gitkeep
+## This creates two blank files named .gitkeep — one inside the data folder and one inside the outputs folder.
 
+### First run
+python detect_staff.py --device cpu
+> Processed 1200 frames...
+> Processed 1300 frames...
+> Finished 1341 frames on cpu at 22.5 FPS
+> Saved annotated video to outputs\people_tracked.mp4
+
+Code	Purpose
+YOLO("yolo26n.pt")	Loads the small CPU-friendly detector
+classes=[0]	Detects only the COCO person class
+ByteTrack	Assigns a continuing ID to each person
+persist=True	Preserves tracking state between frames
+result.plot()	Draws boxes, confidence, and track IDs
+--device cpu/auto/0	Selects CPU, automatic selection, or GPU 0
+try/finally	Ensures video files close correctly
