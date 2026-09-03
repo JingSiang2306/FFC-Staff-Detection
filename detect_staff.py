@@ -47,7 +47,7 @@ def main():
     if not writer.isOpened():
         raise RuntimeError(f"Cannot create output video: {args.output}")
 
-    model = YOLO("yoloModel/yolo26n.pt")
+    model = YOLO("yoloModel/best_v1.0.pt")
     frame_count = 0
     processing_started = time.perf_counter()
 
