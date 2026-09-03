@@ -181,3 +181,8 @@ python experiment/preview_detection.py "experiment/convertedIMG/frame_001150_t04
 python experiment/preview_detection.py "experiment/convertedIMG/frame_001150_t046.000s.jpg" --model "yoloModel/best_v1.1.pt"
 ## Multiple images
 python experiment/preview_detection.py "image1.jpg" "image2.jpg"
+
+### View the model architecture
+python -c "from ultralytics import YOLO; model=YOLO(r'yoloModel\best_v1.1.pt'); model.info(detailed=True, imgsz=640)"
+## Compact indexed layer list
+python -c "from ultralytics import YOLO; model=YOLO(r'yoloModel\best_v1.1.pt'); [(print(i, type(layer).__name__, sum(p.numel() for p in layer.parameters()))) for i, layer in enumerate(model.model.model)]"
