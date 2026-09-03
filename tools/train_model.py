@@ -62,7 +62,7 @@ def main():
         seed=123,
         deterministic=True,
         amp=True,
-        single_cls=True,
+        single_cls=False,
         degrees=180.0,
         flipud=0.5,
         fliplr=0.5,
