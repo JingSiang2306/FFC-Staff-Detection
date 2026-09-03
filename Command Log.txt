@@ -156,3 +156,13 @@ python tools/validate_labels.py --dataset data/person_dataset_seed123
 
 ### Preview labelled dataset
 python tools/validate_labels.py --dataset data/person_dataset_seed123 --preview --preview-count 160 --preview-dir outputs/label_previews_all
+
+### Smoke test for training model
+python tools/train_model.py --smoke-test --device auto
+## CUDA
+python tools/train_model.py --smoke-test --device 0
+
+### Training model
+python tools/train_model.py --device auto
+## CUDA
+python tools/train_model.py --device 0
