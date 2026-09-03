@@ -4,3 +4,5 @@ outputs/*people_tracked*.mp4
 mp4Detail.py
 data/person_dataset*Reject
 outputs/label_previews_all
+experiment/convertedIMG
+experiment/annotated
