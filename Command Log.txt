@@ -166,3 +166,11 @@ python tools/train_model.py --smoke-test --device 0
 python tools/train_model.py --device auto
 ## CUDA
 python tools/train_model.py --device 0
+
+### Fisheye to equirectangular
+python experiment/fisheye_to_equirectangular.py
+> Converted 54/54 (Completed successfully)
+> Images: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\experiment\convertedIMG
+> Manifest: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\experiment\convertedIMG\conversion_manifest.json
+## Overwrite and field of view
+python experiment/fisheye_to_equirectangular.py --fisheye-fov 270 --overwrite
