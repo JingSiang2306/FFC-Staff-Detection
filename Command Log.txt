@@ -174,3 +174,10 @@ python experiment/fisheye_to_equirectangular.py
 > Manifest: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\experiment\convertedIMG\conversion_manifest.json
 ## Overwrite and field of view
 python experiment/fisheye_to_equirectangular.py --fisheye-fov 270 --overwrite
+
+### Detection preview
+python experiment/preview_detection.py "experiment/convertedIMG/frame_001150_t046.000s.jpg"
+## Change model
+python experiment/preview_detection.py "experiment/convertedIMG/frame_001150_t046.000s.jpg" --model "yoloModel/best_v1.1.pt"
+## Multiple images
+python experiment/preview_detection.py "image1.jpg" "image2.jpg"
