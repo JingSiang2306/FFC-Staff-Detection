@@ -28,6 +28,7 @@ def resolve_device(requested):
 
 
 def main():
+    script_started = time.perf_counter()
     args = parse_args()
     device = resolve_device(args.device)
     video = cv2.VideoCapture(str(args.input))
@@ -35,6 +36,8 @@ def main():
         raise FileNotFoundError(f"Cannot open input video: {args.input}")
 
     fps = video.get(cv2.CAP_PROP_FPS) or 25.0
+    total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
+    video_duration = total_frames / fps if fps else 0.0
     width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -46,7 +49,7 @@ def main():
 
     model = YOLO("yoloModel/yolo26n.pt")
     frame_count = 0
-    started = time.perf_counter()
+    processing_started = time.perf_counter()
 
     try:
         while True:
@@ -64,19 +67,26 @@ def main():
                 device=device,
                 verbose=False,
             )[0]
-            writer.write(result.plot())
+            annotated_frame = result.plot()
+            writer.write(annotated_frame)
+            cv2.imshow("Annotated video", annotated_frame)
+            cv2.waitKey(1)
             frame_count += 1
-
-            if frame_count % 100 == 0:
-                print(f"Processed {frame_count} frames...")
+            print(f"\rprocessing {frame_count}/{total_frames} frames", end="", flush=True)
     finally:
         video.release()
         writer.release()
+        cv2.destroyAllWindows()
 
-    elapsed = time.perf_counter() - started
-    speed = frame_count / elapsed if elapsed else 0.0
-    print(f"Finished {frame_count} frames on {device} at {speed:.1f} FPS")
+    processing_elapsed = time.perf_counter() - processing_started
+    total_elapsed = time.perf_counter() - script_started
+    speed = frame_count / processing_elapsed if processing_elapsed else 0.0
+    print("\r" + " " * 80, end="\r")
+    print(f"processed {frame_count}/{total_frames} (Completed successfully)")
     print(f"Saved annotated video to {args.output}")
+    print(f"Finished {frame_count} frames on {device} at {speed:.1f} FPS")
+    print(f"Video duration: {video_duration:.2f} seconds")
+    print(f"Total processing time: {total_elapsed:.2f} seconds")
 
 
 if __name__ == "__main__":
