@@ -128,7 +128,7 @@ result.plot()			Draws boxes, confidence, and track IDs
 try/finally			Ensures video files close correctly
 
 ### Split dataset
-python prepare_dataset.py --seed 123 --output data/person_dataset_seed123
+python tools/prepare_dataset.py --seed 123 --output data/person_dataset_seed123
 > Video frames: 1341
 > train: 12 blocks, 96 images
 > val: 4 blocks, 32 images
@@ -139,3 +139,20 @@ python prepare_dataset.py --seed 123 --output data/person_dataset_seed123
 ### Freeze split manifest
 New-Item -ItemType Directory -Force configs
 Copy-Item data\person_dataset_seed123\split_manifest.json configs\split_seed123.json
+
+### Validate labelled dataset
+python tools/validate_labels.py --dataset data/person_dataset_seed123
+> Dataset: data\person_dataset_seed123
+> Images: 160
+> Label files: 160
+> Valid boxes: 2985
+> Missing labels: 0
+> Unmatched labels: 0
+> Errors: 0
+> Warnings: 0
+> Note: Preview inspection is still required to find people that were not boxed.
+>
+> Validation passed.
+
+### Preview labelled dataset
+python tools/validate_labels.py --dataset data/person_dataset_seed123 --preview --preview-count 160 --preview-dir outputs/label_previews_all
