@@ -31,3 +31,5 @@ for the unknown data introduced during later interview.
 Tracking
 ByteTrack not very good but high FPS 20~23 (Avg 21.5)
 ReID better but with low FPS 6~10 (Avg 8)
+
+> Draw a track and predict next track to track the target?

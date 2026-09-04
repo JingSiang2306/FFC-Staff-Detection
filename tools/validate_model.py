@@ -16,7 +16,7 @@ DEFAULT_PROJECT = PROJECT_ROOT / "outputs" / "test_evaluation"
 def parse_args():
     """Read test-evaluation options from the command line."""
     parser = argparse.ArgumentParser(description="Evaluate a trained YOLO model on the test split.")
-    parser.add_argument("--model", type=Path, default=DEFAULT_MODEL, help="Path to best.pt")
+    parser.add_argument("--model", type=Path, default="yoloModel/best_v1.1.pt", help="Path to best.pt")
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA, help="Path to data.yaml")
     parser.add_argument("--device", default="auto", help="auto, cpu, or CUDA device such as 0")
     parser.add_argument("--imgsz", type=int, default=640, help="Validation image size")

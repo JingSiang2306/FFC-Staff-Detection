@@ -199,3 +199,12 @@ python detect_staff.py --tracker trackers/custom_botsort_reid.yaml
 
 ### Prepare Tag dataset
 python tools/prepare_tag_dataset.py
+## Count label with tag
+(Get-ChildItem data\tag_dataset\labels\train\*.txt | Where-Object { $_.Length -gt 0 }).Count
+(Get-ChildItem data\tag_dataset\labels\val\*.txt | Where-Object { $_.Length -gt 0 }).Count
+(Get-ChildItem data\tag_dataset\labels\test\*.txt | Where-Object { $_.Length -gt 0 }).Count
+## Balance Tag dataset
+python tools/balance_tag_dataset.py
+> train: 26 positive + 104 negative = 130
+> val: 7 positive + 565 negative = 572
+> test: 5 positive + 606 negative = 611
