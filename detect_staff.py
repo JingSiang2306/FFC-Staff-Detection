@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument("--output", type=Path, default=Path("outputs/staff_detected.mp4"))
     parser.add_argument("--person-model", type=Path, default=Path("yoloModel/best_v1.1.pt"))
     parser.add_argument("--tag-model", type=Path, default=Path("yoloModel/best_tag_v1.1.pt"))
-    parser.add_argument("--device", choices=("cpu", "auto", "0"), default="cpu")
+    parser.add_argument("--device", choices=("cpu", "auto", "0"), default="auto")
     parser.add_argument(
         "--tracker",
         type=Path,
