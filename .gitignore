@@ -17,4 +17,5 @@ data/tag_val_positive
 
 yoloModel/best_v1.0.pt
 
+yolo26n-cls.pt
 runs
