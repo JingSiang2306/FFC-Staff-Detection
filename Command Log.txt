@@ -208,3 +208,6 @@ python tools/balance_tag_dataset.py
 > train: 26 positive + 104 negative = 130
 > val: 7 positive + 565 negative = 572
 > test: 5 positive + 606 negative = 611
+
+### Train Tag model
+python tools/train_tag_model.py --device cpu
