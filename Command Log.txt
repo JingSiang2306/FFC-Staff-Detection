@@ -211,3 +211,6 @@ python tools/balance_tag_dataset.py
 
 ### Train Tag model
 python tools/train_tag_model.py --device cpu
+
+### Mine Tag dataset
+python tools/mine_tag_training_crops.py --range 8.20-21.36 --range 24.28-34.76 --range 37.68-42.80 --range 45.72-48.16 --sample-fps 5 --device 0
