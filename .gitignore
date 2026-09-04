@@ -14,6 +14,6 @@ data/tag_dataset_balanced_v1
 data/tag_dataset_v2
 data/tag_val_positive
 
-yoloModel/best_v1.0
+yoloModel/best_v1.0.pt
 
 runs
