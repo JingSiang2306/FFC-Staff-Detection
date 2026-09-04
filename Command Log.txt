@@ -29,6 +29,9 @@ git status
 git check-ignore -v .venv
 > .gitignore:1:.venv      .venv
 
+### Git remove cahce/stop tracking
+git rm -r --cached outputs/training/yolo26n_staff_tag_v1.0
+
 ### Second PC 
 git clone https://github.com/JingSiang2306/FCC-Staff-Detection.git
 cd FCC-Staff-Detection
@@ -208,6 +211,32 @@ python tools/balance_tag_dataset.py
 > train: 26 positive + 104 negative = 130
 > val: 7 positive + 565 negative = 572
 > test: 5 positive + 606 negative = 611
+## Extract val positive image
+$dataset = "data\tag_dataset_balanced_v2"
+$review = "data\tag_val_positive"
+
+New-Item -ItemType Directory -Force $review | Out-Null
+
+Get-ChildItem "$dataset\labels\val\*.txt" |
+    Where-Object { $_.Length -gt 0 } |
+    ForEach-Object {
+        Copy-Item "$dataset\images\val\$($_.BaseName).jpg" $review -Force
+    }
+
+(Get-ChildItem "$review\*.jpg").Count
+> 7
+## Run detection on the 7 positive val images
+yolo predict `
+    model=yoloModel/best_tag_v1.1.pt `
+    source=data/tag_val_positive `
+    conf=0.23 `
+    imgsz=640 `
+    device=0 `
+    project=outputs/diagnostics `
+    name=tag_v2_conf_023 `
+    save=True `
+    save_txt=True `
+    save_conf=True
 
 ### Train Tag model
 python tools/train_tag_model.py --device cpu

@@ -1,0 +1,2 @@
+split,model,image_size,precision,recall,mAP50,mAP50-95,fitness,inference_ms_per_image
+test,C:\Users\User\Downloads\FCC\FCC-Staff-Detection\yoloModel\best_tag_v1.1.pt,640,0.577667,0.600000,0.573333,0.295149,0.295149,3.193
