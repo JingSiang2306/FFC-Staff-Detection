@@ -57,6 +57,8 @@ def main():
     model = YOLO("yoloModel/best_v1.1.pt")
     frame_count = 0
     processing_started = time.perf_counter()
+    previous_frame_time = processing_started
+    realtime_fps = 0.0
 
     try:
         while True:
@@ -75,6 +77,39 @@ def main():
                 verbose=False,
             )[0]
             annotated_frame = result.plot()
+
+            # FPS Annotation
+            current_frame_time = time.perf_counter()
+            frame_elapsed = current_frame_time - previous_frame_time
+            current_fps = 1.0 / frame_elapsed if frame_elapsed else 0.0
+            realtime_fps = (
+                current_fps
+                if realtime_fps == 0.0
+                else 0.9 * realtime_fps + 0.1 * current_fps
+            )
+            previous_frame_time = current_frame_time
+            fps_text = f"FPS: {realtime_fps:.1f}"
+            cv2.putText(
+                annotated_frame,
+                fps_text,
+                (20, 40),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1.0,
+                (0, 0, 0),
+                4,
+                cv2.LINE_AA,
+            )
+            cv2.putText(
+                annotated_frame,
+                fps_text,
+                (20, 40),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1.0,
+                (255, 255, 255),
+                2,
+                cv2.LINE_AA,
+            )
+
             writer.write(annotated_frame)
             cv2.imshow("Annotated video", annotated_frame)
             cv2.waitKey(1)

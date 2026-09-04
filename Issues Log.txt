@@ -28,3 +28,6 @@ for the unknown data introduced during later interview.
 >> Fine-tune with sample data using temporal block method and 60/20/20 train/val/test.
 >> Maybe try preprocessing such as undistortion/rectification to convert fisheye image to equirectangular image.
 
+Tracking
+ByteTrack not very good but high FPS 20~23 (Avg 21.5)
+ReID better but with low FPS 6~10 (Avg 8)

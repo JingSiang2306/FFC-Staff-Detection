@@ -193,5 +193,9 @@ python tools/validate_model.py --device 0 --model "yoloModel/best_v1.1.pt"
 ### Baseline detection
 python detect_staff.py
 ## Set parameter
-python detect_staff.py --tracker bytetrack.yaml --conf 0.25 --imgsz 1280 --device auto --output outputs/bytetrack_baseline.mp4
+python detect_staff.py --tracker trackers/custom_bytetrack.yaml --conf 0.25 --imgsz 1280 --device auto --output outputs/bytetrack_baseline.mp4
+## ReID
+python detect_staff.py --tracker trackers/custom_botsort_reid.yaml
 
+### Prepare Tag dataset
+python tools/prepare_tag_dataset.py
