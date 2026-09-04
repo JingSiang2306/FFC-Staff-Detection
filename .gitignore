@@ -4,3 +4,5 @@ mp4Detail.py
 data/person_dataset*Reject
 outputs/label_previews_all
 outputs/training/yolo26n_fisheye_v1.0
+data/tag_val_positive
+runs
