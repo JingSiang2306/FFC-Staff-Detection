@@ -13,11 +13,11 @@ IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".bmp"}
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", type=Path, default=Path("data/tag_dataset"))
+    parser.add_argument("--source", type=Path, default=Path("data/tag_dataset_v2"))
     parser.add_argument(
-        "--output", type=Path, default=Path("data/tag_dataset_balanced")
+        "--output", type=Path, default=Path("data/tag_dataset_balanced_v2")
     )
-    parser.add_argument("--data-yaml", type=Path, default=Path("data/tag_dataset_balanced/tag_data.yaml"))
+    parser.add_argument("--data-yaml", type=Path, default=Path("data/tag_dataset_balanced_v2/tag_data.yaml"))
     parser.add_argument("--negative-ratio", type=int, default=4)
     parser.add_argument("--seed", type=int, default=123)
     return parser.parse_args()
