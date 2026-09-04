@@ -3,3 +3,4 @@ outputs/*people_tracked*.mp4
 mp4Detail.py
 data/person_dataset*Reject
 outputs/label_previews_all
+training/yolo26n_fisheye_v1.0
