@@ -186,3 +186,12 @@ python experiment/preview_detection.py "image1.jpg" "image2.jpg"
 python -c "from ultralytics import YOLO; model=YOLO(r'yoloModel\best_v1.1.pt'); model.info(detailed=True, imgsz=640)"
 ## Compact indexed layer list
 python -c "from ultralytics import YOLO; model=YOLO(r'yoloModel\best_v1.1.pt'); [(print(i, type(layer).__name__, sum(p.numel() for p in layer.parameters()))) for i, layer in enumerate(model.model.model)]"
+
+### Validate model with test dataset
+python tools/validate_model.py --device 0 --model "yoloModel/best_v1.1.pt"
+
+### Baseline detection
+python detect_staff.py
+## Set parameter
+python detect_staff.py --tracker bytetrack.yaml --conf 0.25 --imgsz 1280 --device auto --output outputs/bytetrack_baseline.mp4
+
