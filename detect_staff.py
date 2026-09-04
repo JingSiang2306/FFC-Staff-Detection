@@ -14,6 +14,13 @@ def parse_args():
     parser.add_argument("--input", type=Path, default=Path("data/sample.mp4"))
     parser.add_argument("--output", type=Path, default=Path("outputs/people_tracked.mp4"))
     parser.add_argument("--device", choices=("cpu", "auto", "0"), default="cpu")
+    parser.add_argument(
+        "--tracker",
+        type=Path,
+        default=Path("trackers/custom_bytetrack.yaml"),
+    )
+    parser.add_argument("--conf", type=float, default=0.10)
+    parser.add_argument("--imgsz", type=int, choices=(640, 960, 1280), default=640)
     return parser.parse_args()
 
 
@@ -60,10 +67,10 @@ def main():
             result = model.track(
                 frame,
                 persist=True,
-                tracker="bytetrack.yaml",
+                tracker=str(args.tracker),
                 classes=[0],
-                conf=0.25,
-                imgsz=640,
+                conf=args.conf,
+                imgsz=args.imgsz,
                 device=device,
                 verbose=False,
             )[0]
@@ -85,6 +92,8 @@ def main():
     print(f"processed {frame_count}/{total_frames} (Completed successfully)")
     print(f"Saved annotated video to {args.output}")
     print(f"Finished {frame_count} frames on {device} at {speed:.1f} FPS")
+    print(f"Tracker: {args.tracker}")
+    print(f"Tracking confidence floor: {args.conf}; image size: {args.imgsz}")
     print(f"Video duration: {video_duration:.2f} seconds")
     print(f"Total processing time: {total_elapsed:.2f} seconds")
 
