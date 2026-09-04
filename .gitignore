@@ -2,6 +2,7 @@
 mp4Detail.py
 
 outputs/*people_tracked*.mp4
+outputs/*staff_detected*.mp4
 outputs/label_previews_all
 outputs/training/yolo26n_fisheye_v1.0
 outputs/training/yolo26n_staff_tag_v1.0
