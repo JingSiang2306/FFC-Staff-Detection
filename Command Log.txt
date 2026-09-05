@@ -243,3 +243,23 @@ python tools/train_tag_model.py --device cpu
 
 ### Mine Tag dataset
 python tools/mine_tag_training_crops.py --range 8.20-21.36 --range 24.28-34.76 --range 37.68-42.80 --range 45.72-48.16 --sample-fps 5 --device 0
+
+### CEPDOF
+## Check paths and annotations without writing files
+python tools/prepare_cepdof.py --dry-run
+> Lunch1: 1201 available, 1000 selected {'train': 600, 'val': 200, 'test': 200}
+> High_activity: 7202 available, 2000 selected {'train': 1200, 'val': 400, 'test': 400}
+> Edge_cases: 4201 available, 2000 selected {'train': 1200, 'val': 400, 'test': 400}
+> Total: 5000 images; {'test': 1000, 'train': 3000, 'val': 1000}; formats: ('detect', 'obb')
+> Dry run passed. Image existence and selected annotations checked; no files written.
+## Prepare both ordinary and rotated labels, with five preview images per sequence per split
+python tools/prepare_cepdof.py --preview 5
+> Preparing 4800/5000
+> Preparing 4900/5000
+> Preparing 5000/5000
+> Done: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\data\cepdof_yolo
+> Keep linked images read-only. Freeze the manifest before training.
+> detect YAML: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\data\cepdof_yolo\detect\data.yaml
+> obb YAML: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\data\cepdof_yolo\obb\data.yaml
+## To prepare only one folder e.g. Lunch1
+python tools/prepare_cepdof.py --only Lunch1 --output data/cepdof_lunch1
