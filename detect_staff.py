@@ -29,7 +29,7 @@ def parse_args():
     parser.add_argument("--crop-padding", type=float, default=0.10)
     parser.add_argument("--vote-window", type=int, default=15)
     parser.add_argument("--vote-min", type=int, default=3)
-    parser.add_argument("--staff-hold", type=int, default=30)
+    parser.add_argument("--staff-hold", type=int, default=45)
     return parser.parse_args()
 
 
