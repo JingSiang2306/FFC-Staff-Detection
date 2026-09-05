@@ -33,3 +33,7 @@ ByteTrack not very good but high FPS 20~23 (Avg 21.5)
 BoT-SORT - ReID better but with low FPS 6~10 (Avg 8)
 
 > Draw a track and predict next track to track the target?
+
+Training
+Trained on sample.mp4 is good but maybe to good for unknown video?
+Trained on CEPDOF detect is not good because when convert angled bb to straight bb, too much bg included.
