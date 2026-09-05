@@ -10,13 +10,14 @@ outputs/tag_audit
 
 data/person_dataset*Reject
 data/tag_expansion_candidates
-data/tag_dataset_v1
-data/tag_dataset_balanced_v1
-data/tag_dataset_v2
+data/tag_dataset_v1.0
+data/tag_dataset_balanced_v1.0
+data/tag_dataset_v1.1
 data/tag_val_positive
 data/cepdof_yolo
 
 yoloModel/best_v1.0.pt
+yoloModel/best_CEPDOF_v1.0.pt
 
 yolo26n-cls.pt
 runs
