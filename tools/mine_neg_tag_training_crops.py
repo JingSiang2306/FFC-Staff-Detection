@@ -47,7 +47,7 @@ def parse_args():
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--input", type=Path, default=Path("data/sample.mp4"))
     parser.add_argument("--split-manifest", type=Path,
-                        default=Path("data/person_dataset/split_manifest.json"))
+                        default=Path("data/person_dataset_seed123/split_manifest.json"))
     parser.add_argument("--person-model", type=Path, default=Path("yoloModel/best_v1.2.pt"))
     parser.add_argument("--tag-model", type=Path, default=Path("yoloModel/best_tag_v1.1.pt"))
     parser.add_argument("--output", type=Path, default=Path("data/tag_hard_negative_candidates"))

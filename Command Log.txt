@@ -267,3 +267,25 @@ python tools/prepare_cepdof.py --only Lunch1 --output data/cepdof_lunch1
 python tools/train_cepdof.py --device 0
 ## Train CEPDOF OBB
 python tools/train_cepdof_obb.py --device 0
+
+### Debug video (include person BB)
+python detect_staff.py --person-show --tag-conf 0.70 --output outputs/staff_detected_debug.mp4
+
+### Mine negative tag crop for training
+python tools/mine_neg_tag_training_crops.py
+> Mining staff-tag candidates from training blocks [3, 4, 5, 6, 7, 9, 10, 11, 12, 14, 15, 17]
+> Sampling about 5.00 FPS; tag floor 0.30; maximum 500 crops
+> Frame 1201/1341; sampled 127; candidates 43
+> Saved 43 candidate crops to data\tag_hard_negative_candidates
+> Review review.csv first, then use --export-reviewed. No negative labels have been assumed.
+## Review
+Open the CSV in Excel and fill only its decision column:
+Decision	Meaning
+negative	No real visible staff tag anywhere in the crop
+positive	A real tag is visible; retain for separate annotation
+skip	Uncertain or unwanted
+Blank	Not reviewed
+## Export 
+python tools/mine_neg_tag_training_crops.py --export-reviewed
+> Exported 17 reviewed staff-tag negatives to data\tag_hard_negatives_reviewed
+> Merge these image/label pairs with tag TRAINING data. This is not a complete training dataset.

@@ -1,0 +1,7 @@
+path: data/tag_dataset_balanced_v2
+train: images/train
+val: images/val
+test: images/test
+
+names:
+  0: staff_tag

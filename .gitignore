@@ -14,8 +14,11 @@ data/person_dataset*Reject
 data/tag_expansion_candidates
 data/tag_dataset_v1.0
 data/tag_dataset_balanced_v1.0
+data/tag_dataset_balanced_v1.1
 data/tag_dataset_v1.1
 data/tag_val_positive
+data/tag_hard_negative_candidates
+data/tag_hard_negative_reviewed
 data/cepdof_yolo
 
 yoloModel/best_v1.0.pt
