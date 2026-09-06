@@ -9,7 +9,7 @@ from ultralytics import YOLO
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATA = PROJECT_ROOT / "data" / "person_dataset_seed123" / "data.yaml"
-DEFAULT_MODEL = PROJECT_ROOT / "yoloModel" / "best_v1.1.pt"
+DEFAULT_MODEL = PROJECT_ROOT / "yoloModel" / "best_v1.2.pt"
 DEFAULT_PROJECT = PROJECT_ROOT / "outputs" / "test_evaluation"
 
 
@@ -22,7 +22,7 @@ def parse_args():
     parser.add_argument("--imgsz", type=int, default=640, help="Validation image size")
     parser.add_argument("--batch", type=int, default=16, help="Validation batch size")
     parser.add_argument("--workers", type=int, default=4, help="Data-loading worker processes")
-    parser.add_argument("--name", default="yolo26n_fisheye_v1.1_test", help="Output run name")
+    parser.add_argument("--name", default="yolo26n_fisheye_v1.2_test", help="Output run name")
     return parser.parse_args()
 
 
