@@ -37,3 +37,6 @@ BoT-SORT - ReID better but with low FPS 6~10 (Avg 8)
 Training
 Trained on sample.mp4 is good but maybe to good for unknown video?
 Trained on CEPDOF detect is not good because when convert angled bb to straight bb, too much bg included.
+
+> Concluded CEPDOF OBB/BB NOT doable
+> Too much background within BB and have a lot false detection

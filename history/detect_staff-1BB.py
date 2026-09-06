@@ -30,10 +30,6 @@ def parse_args():
     parser.add_argument("--vote-window", type=int, default=15)
     parser.add_argument("--vote-min", type=int, default=3)
     parser.add_argument("--staff-hold", type=int, default=45)
-    parser.add_argument(
-        "--person-show", action="store_true",
-        help="Show thin red person boxes and small IDs below them (off by default)",
-    )
     return parser.parse_args()
 
 
@@ -74,21 +70,6 @@ def crop_person(frame, box, padding):
     if crop_x2 <= crop_x1 or crop_y2 <= crop_y1:
         return None
     return frame[crop_y1:crop_y2, crop_x1:crop_x2]
-
-
-def draw_person_box(frame, box, track_id):
-    x1, y1, x2, y2 = map(int, box)
-    colour = (0, 0, 255)
-    label = f"ID {track_id}" if track_id is not None else "ID ?"
-    cv2.rectangle(frame, (x1, y1), (x2, y2), colour, 1)
-    text_width = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.4, 1)[0][0]
-    text_x = max(0, min(x1 + 2, frame.shape[1] - text_width - 2))
-    # Keep the ID inside the image when the person's feet reach the bottom edge.
-    text_y = y2 + 14 if y2 + 17 < frame.shape[0] else max(12, y2 - 6)
-    cv2.putText(frame, label, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX,
-                0.4, (0, 0, 0), 2, cv2.LINE_AA)
-    cv2.putText(frame, label, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX,
-                0.4, colour, 1, cv2.LINE_AA)
 
 
 def draw_staff_box(frame, box, track_id, tag_score):
@@ -224,16 +205,6 @@ def main():
             )[0]
             annotated_frame = frame.copy()
             person_count = len(result.boxes) if result.boxes is not None else 0
-
-            # Draw all red boxes first so the existing green staff boxes cover them.
-            if args.person_show and result.boxes is not None:
-                person_boxes = result.boxes.xyxy.cpu().tolist()
-                person_ids = (
-                    result.boxes.id.int().cpu().tolist()
-                    if result.boxes.id is not None else [None] * len(person_boxes)
-                )
-                for person_box, person_id in zip(person_boxes, person_ids):
-                    draw_person_box(annotated_frame, person_box, person_id)
 
             tracked_people = []
             person_crops = []
