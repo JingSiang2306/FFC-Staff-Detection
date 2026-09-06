@@ -110,7 +110,7 @@ def plot_accuracy_vs_epoch(save_dir):
         xlabel="Epoch",
         ylabel="Validation OBB mAP (0-1)",
         ylim=(0, 1),
-        title="CEPDOF rotated person detection",
+        title="Staff tag detection",
     )
     axis.grid(alpha=0.25)
     axis.legend()
@@ -153,7 +153,7 @@ def main():
         epochs=epochs,
         batch=args.batch,
         workers=args.workers,
-        patience=20,
+        patience=0,
         optimizer="AdamW",
         lr0=0.001,
         seed=123,

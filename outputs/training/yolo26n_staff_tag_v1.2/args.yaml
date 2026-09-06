@@ -2,9 +2,9 @@ task: detect
 mode: train
 model: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\yoloModel\yolo26n.pt
 data: C:\Users\User\Downloads\FCC\FCC-Staff-Detection\data\tag_dataset_balanced_v1.2\tag_data.yaml
-epochs: 100
+epochs: 200
 time: null
-patience: 20
+patience: 0
 batch: -1
 imgsz: 640
 save: true

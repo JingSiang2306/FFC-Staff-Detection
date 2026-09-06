@@ -7,6 +7,7 @@ outputs/label_previews_all
 outputs/training/yolo26n_fisheye_v1.0
 outputs/training/yolo26n_fisheye_v1.1
 outputs/training/yolo26n_staff_tag_v1.0
+outputs/training/yolo26n_staff_tag_v1.1
 outputs/test_evaluation/yolo26n_fisheye_v1.1_test
 outputs/tag_audit
 
@@ -23,6 +24,7 @@ data/cepdof_yolo
 
 yoloModel/best_v1.0.pt
 yoloModel/best_v1.1.pt
+toloModel/best_tag_v1.1.pt
 yoloModel/best_CEPDOF_v1.0.pt
 
 tools/audit_tag_dataset.py
