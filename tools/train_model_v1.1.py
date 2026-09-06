@@ -124,6 +124,7 @@ def plot_accuracy_vs_epoch(save_dir):
     )
     print("The deployment checkpoint remains weights/best.pt.")
 
+
 def main():
     args = parse_args()
     data_path = args.data.resolve()
