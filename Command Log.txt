@@ -265,3 +265,5 @@ python tools/prepare_cepdof.py --preview 5
 python tools/prepare_cepdof.py --only Lunch1 --output data/cepdof_lunch1
 ## Train CEPDOF
 python tools/train_cepdof.py --device 0
+## Train CEPDOF OBB
+python tools/train_cepdof_obb.py --device 0
