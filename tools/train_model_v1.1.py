@@ -40,7 +40,7 @@ def main():
 
     device = resolve_device(args.device)
     epochs = 1 if args.smoke_test else args.epochs
-    run_name = "yolo26n_custom_aug_smoke" if args.smoke_test else "yolo26n_custom_aug_v1"
+    run_name = "yolo26n_fisheye_v1.2_smoke" if args.smoke_test else "yolo26n_fisheye_v1.2"
 
     print(f"Mode: {'smoke test' if args.smoke_test else 'full training'}")
     print(f"Data: {data_path}")
