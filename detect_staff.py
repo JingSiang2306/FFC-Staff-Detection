@@ -15,7 +15,7 @@ def parse_args():
     parser.add_argument("--input", type=Path, default=Path("data/sample.mp4"))
     parser.add_argument("--output", type=Path, default=Path("outputs/staff_detected.mp4"))
     parser.add_argument("--person-model", type=Path, default=Path("yoloModel/best_v1.2.pt"))
-    parser.add_argument("--tag-model", type=Path, default=Path("yoloModel/best_tag_v1.1.pt"))
+    parser.add_argument("--tag-model", type=Path, default=Path("yoloModel/best_tag_v1.2.pt"))
     parser.add_argument("--device", choices=("cpu", "auto", "0"), default="auto")
     parser.add_argument(
         "--tracker",
@@ -24,7 +24,7 @@ def parse_args():
     )
     parser.add_argument("--conf", type=float, default=0.10, help="Person confidence threshold")
     parser.add_argument("--imgsz", type=int, choices=(640, 960, 1280), default=640)
-    parser.add_argument("--tag-conf", type=float, default=0.3, help="Tag confidence threshold")
+    parser.add_argument("--tag-conf", type=float, default=0.5, help="Tag confidence threshold")
     parser.add_argument("--tag-imgsz", type=int, default=640)
     parser.add_argument("--crop-padding", type=float, default=0.10)
     parser.add_argument("--vote-window", type=int, default=15)
