@@ -7,6 +7,7 @@ from collections import defaultdict, deque
 from pathlib import Path
 
 import cv2
+import numpy as np
 import torch
 from ultralytics import YOLO
 
@@ -36,11 +37,15 @@ def parse_args():
     parser.add_argument("--tag-imgsz", type=int, default=640)
     parser.add_argument("--crop-padding", type=float, default=0.10)  # Add space on each side of a person crop.
     parser.add_argument("--vote-window", type=int, default=15)       # Look for evidence in this many recent frames.
-    parser.add_argument("--vote-min", type=int, default=3)           # Require this many positive frames to confirm staff.
-    parser.add_argument("--staff-hold", type=int, default=45)        # Keep staff status briefly without fresh evidence.
+    parser.add_argument("--vote-min", type=int, default=5)           # Require this many positive frames to confirm staff.
+    parser.add_argument("--staff-hold", type=int, default=75)        # Keep staff status briefly without fresh evidence.
     parser.add_argument(
         "--person-show", action="store_true",
         help="Show thin red person boxes and small IDs below them (off by default)",
+    )
+    parser.add_argument(
+        "--trajectory-show", action="store_true",
+        help="Show the latest 60 staff positions as green trails (off by default)",
     )
     return parser.parse_args()
 
@@ -111,9 +116,6 @@ def draw_person_box(frame, box, track_id):
     text_x = max(0, min(x1 + 2, frame.shape[1] - text_width - 2))
     # Keep the ID inside the image when the person's feet reach the bottom edge.
     text_y = y2 + 14 if y2 + 17 < frame.shape[0] else max(12, y2 - 6)
-    # Draw a black outline first, then the coloured text for readability.
-    cv2.putText(frame, label, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX,
-                0.4, (0, 0, 0), 2, cv2.LINE_AA)
     cv2.putText(frame, label, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX,
                 0.4, colour, 1, cv2.LINE_AA)
 
@@ -127,17 +129,6 @@ def draw_staff_box(frame, box, track_id, tag_score):
     colour = (0, 255, 0)
     label = f"STAFF ID {track_id} | Tag {tag_score:.2f}"
     cv2.rectangle(frame, (x1, y1), (x2, y2), colour, 2)
-    # Draw a black outline under the green label.
-    cv2.putText(
-        frame,
-        label,
-        (x1, max(20, y1 - 8)),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        0.65,
-        (0, 0, 0),
-        4,
-        cv2.LINE_AA,
-    )
     cv2.putText(
         frame,
         label,
@@ -159,10 +150,30 @@ def staff_coordinates(box):
     return round((x1 + x2) / 2, 1), round(y2, 1)
 
 
+def draw_staff_trajectories(frame, staff_rows, trajectory_history):
+    """
+    Draw the latest 60 bottom-centre positions for each displayed staff ID.
+    Start a new trail after a missing frame or a loss of staff status.
+    """
+    current_ids = {row[0] for row in staff_rows}
+    # Remove absent IDs so trails do not bridge gaps or keep growing in memory.
+    for track_id in list(trajectory_history):
+        if track_id not in current_ids:
+            del trajectory_history[track_id]
+
+    for track_id, _, x, y, _ in staff_rows:
+        history = trajectory_history.setdefault(track_id, deque(maxlen=60))
+        history.append((round(x), round(y)))  # Use the same position as the coordinate label and CSV.
+        if len(history) >= 2:
+            points = np.array(history, dtype=np.int32).reshape((-1, 1, 2))
+            # Join points in order without closing the trail into a loop.
+            cv2.polylines(frame, [points], False, (0, 255, 0), 2, cv2.LINE_AA)
+
+
 def format_video_time(frame_index, fps):
     """
     Convert a zero-based frame index to video time in MM:SS:mmm format.
-    Use the source frame rate, not the computer's processing speed.
+    Using the source frame rate.
     """
     total_ms = round(frame_index * 1000 / fps)
     minutes, remainder = divmod(total_ms, 60000)
@@ -191,8 +202,6 @@ def draw_staff_coordinates(frame, box, x, y):
     last_y = max(text_height + line_gap + 3, min(int(box[3]), frame_height - baseline - 3))
     for index, text in enumerate(lines):
         position = (text_x, last_y - line_gap + index * line_gap)
-        # Draw a black outline beneath the green coordinates.
-        # cv2.putText(frame, text, position, font, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(frame, text, position, font, font_scale, (0, 255, 0), 1, cv2.LINE_AA)
 
 
@@ -201,16 +210,6 @@ def draw_fps(frame, realtime_fps):
     Show the smoothed processing speed at the top-left corner.
     """
     fps_text = f"FPS: {realtime_fps:.1f}"
-    cv2.putText(
-        frame,
-        fps_text,
-        (20, 40),
-        cv2.FONT_HERSHEY_SIMPLEX,
-        1.0,
-        (0, 0, 0),
-        4,
-        cv2.LINE_AA,
-    )
     cv2.putText(
         frame,
         fps_text,
@@ -242,16 +241,6 @@ def draw_counts(frame, person_count, staff_count):
             position,
             font,
             font_scale,
-            (0, 0, 0),
-            4,
-            cv2.LINE_AA,
-        )
-        cv2.putText(
-            frame,
-            text,
-            position,
-            font,
-            font_scale,
             (255, 255, 255),
             thickness,
             cv2.LINE_AA,
@@ -261,12 +250,12 @@ def draw_counts(frame, person_count, staff_count):
 def main():
     """
     Process the video once: track people, check their tags, and draw results.
-    Keep staff evidence separate for each tracker ID.
+    Store each tracking ID's tag detections separately.
     """
     script_started = time.perf_counter()
     args = parse_args()
     validate_args(args)
-    csv_path = args.csv_output if args.csv_output is not None else args.output.with_suffix(".csv")
+    csv_path = args.csv_output if args.csv_output is not None else args.output.with_suffix(".csv")      # Same as --output if not given.
     device = resolve_device(args.device)
     video = cv2.VideoCapture(str(args.input))
     if not video.isOpened():
@@ -282,15 +271,17 @@ def main():
     writer = cv2.VideoWriter(
         str(args.output), cv2.VideoWriter_fourcc(*"mp4v"), fps, (width, height)
     )
+    # Check that the output video was created successfully before processing frames.
     if not writer.isOpened():
         video.release()
         raise RuntimeError(f"Cannot create output video: {args.output}")
 
-    person_model = YOLO(str(args.person_model))
-    tag_model = YOLO(str(args.tag_model))
+    person_model = YOLO(str(args.person_model))                         # Load the person detection model.
+    tag_model = YOLO(str(args.tag_model))                               # Load the separate staff tag detection model.  
     tag_events = defaultdict(deque)                                     # Store positive (frame number, score) pairs per ID.
     active_staff_until = {}                                             # Map active staff IDs to their expiry frame.
     confirmed_staff_ids = set()                                         # Keep all confirmed IDs for the final summary only.
+    trajectory_history = {}                                             # Keep trail positions separate from staff evidence.
     tag_positive_events = 0
     frame_count = 0
     processing_started = time.perf_counter()
@@ -300,6 +291,7 @@ def main():
     csv_rows = 0
 
     try:
+        # Open and write the CSV header before processing frames so the file exists even if no staff are detected.
         csv_path.parent.mkdir(parents=True, exist_ok=True)
         csv_file = csv_path.open("w", newline="", encoding="utf-8")
         csv_writer = csv.writer(csv_file)
@@ -312,35 +304,35 @@ def main():
             # Preserve tracker state between frames; class 0 is the person class.
             result = person_model.track(
                 frame,
-                persist=True,
-                tracker=str(args.tracker),
-                classes=[0],
-                conf=args.conf,
-                imgsz=args.imgsz,
-                device=device,
-                verbose=False,
-            )[0]
+                persist=True,                                           # Keep the tracker state between frames.
+                tracker=str(args.tracker),                              # Use the custom tracker configuration file.
+                classes=[0],                                            # Only track the person class (class 0).
+                conf=args.conf,                                         # Minimum confidence for person detection (DEFAULT 0.1).
+                imgsz=args.imgsz,                                       # Resize the input frame to this size for person detection (DEFAULT 640).
+                device=device,                                          # Use the resolved device (CPU or GPU) for inference.
+                verbose=False,                                          # Suppress verbose output from the model to keep the console clean.
+            )[0]                                                        # Get the first (and only) result from the list returned by the model.
             annotated_frame = frame.copy()                              # Keep the original image clean for tag detection.
             person_count = len(result.boxes) if result.boxes is not None else 0
 
             # Draw all red boxes first so the existing green staff boxes cover them.
             if args.person_show and result.boxes is not None:
-                person_boxes = result.boxes.xyxy.cpu().tolist()
+                person_boxes = result.boxes.xyxy.cpu().tolist()         # Convert the tensor of person boxes to a list of bounding boxes in (x1, y1, x2, y2) format.
                 person_ids = (
-                    result.boxes.id.int().cpu().tolist()
+                    result.boxes.id.int().cpu().tolist()                # Convert the tensor of person IDs to a list of integers, or use None for each box
                     if result.boxes.id is not None else [None] * len(person_boxes)
                 )
-                for person_box, person_id in zip(person_boxes, person_ids):
+                for person_box, person_id in zip(person_boxes, person_ids):     # Draw each person box with its corresponding ID on the annotated frame.
                     draw_person_box(annotated_frame, person_box, person_id)
 
             tracked_people = []
             person_crops = []
             # Only people with track IDs can build temporal staff evidence.
             if result.boxes is not None and result.boxes.id is not None:
-                boxes = result.boxes.xyxy.cpu().tolist()
+                boxes = result.boxes.xyxy.cpu().tolist()                
                 track_ids = result.boxes.id.int().cpu().tolist()
-                for box, track_id in zip(boxes, track_ids):
-                    crop = crop_person(frame, box, args.crop_padding)
+                for box, track_id in zip(boxes, track_ids):                     # Iterate over each detected person box and its corresponding track ID.
+                    crop = crop_person(frame, box, args.crop_padding)           # Crop the person from the original frame with padding, returning None if the crop is invalid.
                     if crop is not None and crop.size:
                         # Keep these lists in the same order to match crops to IDs.
                         tracked_people.append((box, track_id))
@@ -350,29 +342,30 @@ def main():
             if person_crops:
                 # Check all person crops together with the separate tag model.
                 tag_results = tag_model.predict(
-                    person_crops,
-                    classes=[0],
-                    conf=args.tag_conf,
-                    imgsz=args.tag_imgsz,
-                    device=device,
-                    verbose=False,
+                    person_crops,                                       # Run the tag model on the list of person crops to detect staff tags.
+                    classes=[0],                                        # Only consider the staff tag class (class 0) for detection.
+                    conf=args.tag_conf,                                 # Minimum confidence threshold for tag detection (DEFAULT 0.5).
+                    imgsz=args.tag_imgsz,                               # Resize the person crops to this size for tag detection (DEFAULT 640).
+                    device=device,                                      # Use the resolved device (CPU or GPU) for inference.
+                    verbose=False,                                      # Suppress verbose output from the model to keep the console clean.
                 )
-                for index, tag_result in enumerate(tag_results):
+                for index, tag_result in enumerate(tag_results):                            # Iterate over each tag detection result corresponding to the person crops.
                     if tag_result.boxes is not None and len(tag_result.boxes):
                         # Use the strongest tag prediction from this person's crop.
                         tag_scores[index] = float(tag_result.boxes.conf.max().item())
 
-            vote_start = frame_count - args.vote_window + 1
+            vote_start = frame_count - args.vote_window + 1                                 # The earliest frame to consider for voting; negative values are allowed at the start of the video.
             # Retain enough history for voting and the displayed confidence.
-            history_start = frame_count - max(args.vote_window, args.staff_hold) + 1
+            history_start = frame_count - max(args.vote_window, args.staff_hold) + 1      
             # Expire staff status even when an ID is missing from this frame.
             active_staff_until = {
-                track_id: active_until
-                for track_id, active_until in active_staff_until.items()
-                if active_until >= frame_count
+                track_id: active_until                                                      # Keep only staff IDs that are still active in this frame.
+                for track_id, active_until in active_staff_until.items()                    # Iterate over the active staff IDs and their expiration frames.
+                if active_until >= frame_count                                              
             }
             staff_count = 0
             frame_rows = []
+            staff_annotations = []
             frame_time = format_video_time(frame_count, fps)
             for (box, track_id), tag_score in zip(tracked_people, tag_scores):
                 history = tag_events[track_id]
@@ -395,12 +388,18 @@ def main():
                     recent_scores = [score for _, score in history]
                     # Show the retained peak score, not necessarily this frame's score.
                     display_score = max(recent_scores) if recent_scores else tag_score
-                    draw_staff_box(annotated_frame, box, track_id, display_score)
                     x, y = staff_coordinates(box)
-                    draw_staff_coordinates(annotated_frame, box, x, y)
+                    staff_annotations.append((box, track_id, display_score, x, y))
                     # Export only displayed staff; frame numbering starts at 1.
                     frame_rows.append([track_id, frame_count + 1, x, y, frame_time])
                     staff_count += 1
+
+            if args.trajectory_show:
+                draw_staff_trajectories(annotated_frame, frame_rows, trajectory_history)
+            # Draw staff boxes and labels last so they remain above the trails.
+            for box, track_id, display_score, x, y in staff_annotations:
+                draw_staff_box(annotated_frame, box, track_id, display_score)
+                draw_staff_coordinates(annotated_frame, box, x, y)
 
             current_frame_time = time.perf_counter()
             frame_elapsed = current_frame_time - previous_frame_time

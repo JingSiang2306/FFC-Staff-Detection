@@ -51,3 +51,6 @@ Trained on CEPDOF detect is not good because when convert angled bb to straight 
 >> Corresponding to frame: 202-268, 269-335, 336-402, 403-469, 470-536, 604-670, 671-737, 738-804, 805-871, 939-1005, 1006-1072, 1140-1206
 > Split blocks same as person_dataset_seed123, to prevent similar frame appear at different split folder
 >> e.g. frame 225 at train, frame 226 at val
+
+Final Tuning 
+> vote-min 5, vote-window 15, staff-hold 75

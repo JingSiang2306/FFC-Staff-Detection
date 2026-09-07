@@ -14,8 +14,8 @@ The goal is to identify frames containing staff and, as a bonus, provide staff c
 
 ### Temporal voting: actual current behaviour
 
-- A new tracker ID needs at least 3 tag-positive frames within the latest 15 processed video frames. These need not be consecutive.
-- Whenever 3 votes still lie in that window, the expiry is set to the current frame plus 45. Even without a new positive, votes remaining in the window can refresh this expiry.
+- A new tracker ID needs at least 5 tag-positive frames within the latest 15 processed video frames. These need not be consecutive.
+- Whenever 5 votes still lie in that window, the expiry is set to the current frame plus 75. Even without a new positive, votes remaining in the window can refresh this expiry.
 - An already-active staff ID can also refresh its expiry with one new tag-positive frame. Status expires after the stored expiry frame; it is not permanent for the whole video.
 - A new ID starts without the previous ID's evidence. There is no cross-ID identity stitching. If an ID transfers to another person, its retained staff status can transfer too until it expires.
 - The displayed `Tag` value is the **highest accepted score in the retained history**, not necessarily the current frame's score. A high displayed value therefore does not prove the tag is currently visible.
@@ -56,10 +56,16 @@ Require the first NVIDIA GPU:
 python detect_staff.py --device 0
 ```
 
-Show all returned person boxes as thin red boxes with small IDs below them:
+Show all returned person boxes as thin red boxes with small IDs below them for diagnosis:
 
 ```powershell
 python detect_staff.py --person-show
+```
+
+Show staff's trajectory for latest 60 frames
+
+```powershell
+python detect_staff.py --trajectory-show
 ```
 
 Staff retain the red person ID below the box, while the thicker green staff box is drawn over the red box. Without this flag, only staff boxes are drawn. Press `q` in the preview to stop early; the saved video then contains only the processed portion.
@@ -78,7 +84,7 @@ python detect_staff.py --csv-output outputs/staff_frames.csv
 
 The columns, in order, are `staff ID,frame,x,y,time`. There is one row per displayed staff ID per frame, including frames where staff status is held without a fresh tag detection. Multiple staff in one frame produce multiple rows; frames with no displayed staff produce none. If no staff are confirmed, the CSV contains only its header.
 
-Frame numbering starts at **1**; frame 1 has time `00:00:000`. Time is `MM:SS:mmm`, with three millisecond digits, computed as `(frame - 1) / source_fps`. At 25 FPS, frame 26 is `00:01:000`. It is video time, not processing time. This follows the source FPS timeline (appropriate for the supplied constant-frame-rate video), not per-frame presentation timestamps from a variable-frame-rate source. Minutes may exceed 59.
+Frame numbering starts at **1**; frame 1 has time `00m 00s 000ms`. Time uses minutes, seconds and milliseconds, calculated as `(frame - 1) / source_fps`. At 25 FPS, frame 26 is `00m 01s 000ms`. This represents video time, not processing time. Explicit units prevent Excel from misinterpreting the values. Timing assumes a constant frame rate.
 
 The CSV closes on completion, `q`, or a processing error, preserving rows already written. Existing CSV/video output files are overwritten when their paths are reused. The staff ID is the tracker ID, so ID fragmentation or transfer remains possible. Export is one-pass and does not backfill frames before staff confirmation.
 
@@ -93,9 +99,10 @@ The CSV closes on completion, `q`, or a processing error, preserving rows alread
 | `--conf`, `--imgsz` | `0.10`, `640` |
 | `--tag-conf`, `--tag-imgsz` | `0.5`, `640` |
 | `--crop-padding` | `0.10` on each side |
-| `--vote-window`, `--vote-min` | `15`, `3` |
-| `--staff-hold` | `45` frames |
+| `--vote-window`, `--vote-min` | `15`, `5` |
+| `--staff-hold` | `75` frames |
 | `--person-show` | Off |
+| `--trajectory-show` | Off |
 | `--csv-output` | Same path as `--output`, with a `.csv` extension |
 
 List all options:
@@ -138,7 +145,7 @@ Tag-model workflow already completed during development:
 | Positive expansion, balanced v1.1 | 43 positive + 172 negative | Unchanged | Unchanged |
 | Negative expansion, balanced v1.2 | 43 positive + 189 negative | Unchanged | Unchanged |
 
-## Important limitation
+## Limitations
 
 The accepted result is a proof of concept. It is not guaranteed to detect every staff occurrence or generalize to an unknown video. 
 
