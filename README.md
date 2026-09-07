@@ -70,6 +70,12 @@ python detect_staff.py --trajectory-show
 
 Staff retain the red person ID below the box, while the thicker green staff box is drawn over the red box. Without this flag, only staff boxes are drawn. Press `q` in the preview to stop early; the saved video then contains only the processed portion.
 
+The default input path is `data/sample.mp4`. Use `--input` for new input video.
+
+```powershell
+python detect_staff.py --input data/sample-2.mp4
+```
+
 The annotated result is written to `outputs/staff_detected.mp4`. Use a different `--output` filename to preserve previous results.
 
 ### Staff coordinates and CSV
