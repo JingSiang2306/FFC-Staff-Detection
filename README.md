@@ -12,12 +12,6 @@ The goal is to identify frames containing staff and, as a bonus, provide staff c
 4. confirms staff using recent tag evidence for each tracker ID, with temporary status retention;
 5. displays staff boxes, IDs, tag scores, bottom-centre coordinates, processing FPS and current-frame counts, and writes an annotated MP4 plus a staff-occurrence CSV.
 
-### Demo
-
-<video src="outputs/demo/1_staff_detect-Normal-Compressed.mp4" width="100%" controls>
-  Demo videos located at outputs/demo.
-</video>
-
 ### Temporal voting: actual current behaviour
 
 - A new tracker ID needs at least 5 tag-positive frames within the latest 15 processed video frames. These need not be consecutive.
