@@ -25,7 +25,7 @@ data/cepdof_yolo
 
 yoloModel/best_v1.0.pt
 yoloModel/best_v1.1.pt
-toloModel/best_tag_v1.1.pt
+yoloModel/best_tag_v1.1.pt
 yoloModel/best_CEPDOF_v1.0.pt
 
 tools/audit_tag_dataset.py
