@@ -74,6 +74,7 @@ def validate_args(args):
         raise ValueError("Voting values must be positive.")
     if args.vote_min > args.vote_window:
         raise ValueError("--vote-min cannot be greater than --vote-window.")
+    
     csv_path = args.csv_output if args.csv_output is not None else args.output.with_suffix(".csv")
     protected_paths = (args.input, args.output, args.person_model, args.tag_model, args.tracker)
     if csv_path.resolve() in {path.resolve() for path in protected_paths}:
@@ -191,7 +192,7 @@ def draw_staff_coordinates(frame, box, x, y):
     for index, text in enumerate(lines):
         position = (text_x, last_y - line_gap + index * line_gap)
         # Draw a black outline beneath the green coordinates.
-        cv2.putText(frame, text, position, font, font_scale, (0, 0, 0), 3, cv2.LINE_AA)
+        # cv2.putText(frame, text, position, font, font_scale, (0, 0, 0), 2, cv2.LINE_AA)
         cv2.putText(frame, text, position, font, font_scale, (0, 255, 0), 1, cv2.LINE_AA)
 
 

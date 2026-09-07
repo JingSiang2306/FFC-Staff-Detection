@@ -48,6 +48,6 @@ Trained on CEPDOF detect is not good because when convert angled bb to straight 
 >> Tune confidence level (staff tag) to reduce false detection (tag-conf 0.5)
 > Hard negative training - mine hard negative staff crop to train the new model
 >> Only mine for train blocks: 3, 4, 5, 6, 7, 9, 10, 11, 12, 14, 15, 17
->> Coresponding to frame: 202-268, 269-335, 336-402, 403-469, 470-536, 604-670, 671-737, 738-804, 805-871, 939-1005, 1006-1072, 1140-1206
+>> Corresponding to frame: 202-268, 269-335, 336-402, 403-469, 470-536, 604-670, 671-737, 738-804, 805-871, 939-1005, 1006-1072, 1140-1206
 > Split blocks same as person_dataset_seed123, to prevent similar frame appear at different split folder
 >> e.g. frame 225 at train, frame 226 at val

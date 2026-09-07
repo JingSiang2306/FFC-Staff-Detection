@@ -1,4 +1,4 @@
-# FCC Staff Detection
+# FFC Staff Detection
 
 The goal is to identify frames containing staff and, as a bonus, provide staff coordinates. The current main script produces a live preview, annotated video and per-frame staff coordinate CSV.
 
@@ -12,22 +12,6 @@ The goal is to identify frames containing staff and, as a bonus, provide staff c
 4. confirms staff using recent tag evidence for each tracker ID, with temporary status retention;
 5. displays staff boxes, IDs, tag scores, bottom-centre coordinates, processing FPS and current-frame counts, and writes an annotated MP4 plus a staff-occurrence CSV.
 
-### Development closure and experiment history
-
-This closes implementation work for the accepted milestone, not every possible accuracy limitation. The history below consolidates available project conversations and the latest uploaded main script; it is not a verified inventory of every chat or a remote issue-tracker closure.
-
-| Workstream | Outcome at the freeze |
-|---|---|
-| Person detection | Pretrained YOLO baseline, overhead-person fine-tuning and model revisions completed. The main script now selects `best_v1.2.pt`. Earlier `item` class-name metadata was corrected to `person`. |
-| Runtime and tracking | CPU/GPU selection, progress, timing and video output implemented. ByteTrack threshold/buffer tuning and BoT-SORT ReID comparisons were performed. The current default remains the custom ByteTrack YAML. |
-| Staff-tag model | Person-crop preparation, tag annotation, reproducible balancing, positive expansion and separate training implemented. The latest main script selects `best_tag_v1.2.pt`; final v1.2 numerical metrics are not established by the available evidence. |
-| Hard-negative mining | `tools/mine_neg_tag_training_crops.py` created to find difficult candidates for the **tag detector**. Human review is required before treating a candidate as a negative. |
-| Temporal logic and display | Permanent staff assignment replaced with expiring per-ID status. Staff confidence, current-frame counts and optional red person boxes/IDs implemented. The earlier trailing `video` NameError is absent from the latest script. |
-| Fisheye and CEPDOF experiments | Fisheye preprocessing, CEPDOF preparation/training, and ordinary-box versus oriented-box (OBB) experiments explored separately. OBB person-only and staff-pipeline scripts were developed as experiments; the main script remains ordinary-box based. |
-| Remaining accuracy issues | Occasional false positives, missed people, hidden tags, fragmented IDs and identity transfers are accepted limitations for this milestone, not claimed to be solved. |
-| Frame/coordinate export | Added after the initial freeze: per-displayed-staff bottom-centre coordinates in both preview/video and CSV. |
-| Two-pass output | Still deferred. Earlier frames are not retrospectively recovered after later staff confirmation. |
-
 ### Temporal voting: actual current behaviour
 
 - A new tracker ID needs at least 3 tag-positive frames within the latest 15 processed video frames. These need not be consecutive.
@@ -37,28 +21,6 @@ This closes implementation work for the accepted milestone, not every possible a
 - The displayed `Tag` value is the **highest accepted score in the retained history**, not necessarily the current frame's score. A high displayed value therefore does not prove the tag is currently visible.
 - A staff box is drawn only when the person is currently returned with a usable tracked crop. Holding staff status does not reconstruct a missing person box.
 - `Persons` and `Staff` are current-frame counts. The final console list contains all IDs ever confirmed, not a count of unique real staff members.
-
-## Project layout
-
-Documented paths are listed below. This is not a filesystem scan of the Windows repository; experiment locations and additional utility filenames should be checked locally before submission.
-
-| Path | Purpose |
-|---|---|
-| `detect_staff.py` | Main ordinary-box person/tag inference pipeline |
-| `README.md`, `requirements.txt` | Project guide and environment dependencies |
-| `trackers/custom_bytetrack.yaml` | Default tracker configuration; retain the version used for the accepted run |
-| `yoloModel/best_v1.2.pt` | Current default person weights |
-| `yoloModel/best_tag_v1.2.pt` | Current default tag weights |
-| `tools/` | Dataset preparation, label validation, balancing, mining and training utilities |
-| `data/sample.mp4` | Supplied demonstration video |
-| `data/person_dataset/` | Person images and YOLO labels |
-| `data/tag_dataset*/` | Original and versioned tag datasets, manifests and dataset YAML files |
-| `data/cepdof_yolo/` | Prepared CEPDOF experimental data, including the OBB branch |
-| `experiment/` | Separate experimental scripts/results; not the main inference entry point |
-| `outputs/` | Annotated videos, training runs and diagnostics |
-| `notes/FCC AI Evaluation - Engineering Notes.md` | Detailed design and experiment history |
-
-The external CEPDOF source was kept beside this repository at `FCC/CEPDOF`, while the repository was at `FCC/FCC-Staff-Detection`.
 
 ## Setup
 
@@ -70,9 +32,7 @@ python -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-Put the video at `data/sample.mp4`, provide both trained weights in `yoloModel/`, and retain `trackers/custom_bytetrack.yaml`. Model weights and the complete environment are not bundled with this README. A CUDA-capable GPU also needs a compatible CUDA-enabled PyTorch installation; otherwise `auto` uses the CPU.
-
-Before final submission, retain the working dependency versions, tracker YAML, exact run command and selected weights so the result can be reproduced on another computer.
+Put the video at `data/sample.mp4`, provide both trained weights in `yoloModel/`, and retain `trackers/custom_bytetrack.yaml`. A CUDA-capable GPU also needs a compatible CUDA-enabled PyTorch installation; otherwise `auto` uses the CPU.
 
 ## Run
 
@@ -138,8 +98,6 @@ The CSV closes on completion, `q`, or a processing error, preserving rows alread
 | `--person-show` | Off |
 | `--csv-output` | Same path as `--output`, with a `.csv` extension |
 
-These are the uploaded script's defaults, not proof of the command-line overrides used in a particular video. Earlier `--tag-conf 0.7` trials are historical experiments, not the current default. Tracker association thresholds and buffer duration are configured separately in the YAML.
-
 List all options:
 
 ```powershell
@@ -168,9 +126,8 @@ Tag-model workflow already completed during development:
 1. `prepare_tag_dataset.py`: generate padded crops from person labels while preserving source splits.
 2. Manually label visible tags as class `0: staff_tag`; review empty labels rather than assuming all unlabelled crops are negatives.
 3. `balance_tag_dataset.py`: retain all training positives and reproducibly sample training negatives (4:1, seed 123); keep full validation/test sets unchanged.
-4. Audit tag visibility/size, mine training-only expansion candidates, annotate new positives and create a separate dataset version.
-5. `train_tag_model.py`: train the separate tag detector, keeping the person-model experiment independent.
-6. `mine_neg_tag_training_crops.py`: review difficult tag predictions from training data and add only confirmed negatives to a later training version. Do not mine validation/test examples into training.
+4. `train_tag_model.py`: train the separate tag detector, keeping the person-model experiment independent.
+5. `mine_neg_tag_training_crops.py`: review difficult tag predictions from training data and add only confirmed negatives to a later training version. Do not mine validation/test examples into training.
 
 ### Recorded tag dataset checkpoints
 
@@ -178,30 +135,13 @@ Tag-model workflow already completed during development:
 |---|---|---|---|
 | Original annotated crops | 26 positive + 1,776 negative | 7 positive + 565 negative | 5 positive + 606 negative |
 | First balanced set | 26 positive + 104 negative | Unchanged | Unchanged |
-| Positive expansion, balanced v2 | 43 positive + 172 negative | Unchanged | Unchanged |
-
-The expansion added 17 labelled positives. These are historical counts, not a verified count of the later hard-negative/v1.2 dataset. Keep the final dataset's selection manifest for the report.
-
-The initial tag baseline was ineffective. The subsequent supplied v1.1 plots showed mAP50 of 0.496 and a confusion matrix with 4 true positives, 2 false positives and 3 false negatives at its evaluation settings. These are small-validation-set results, **not** final v1.2 metrics or unknown-video accuracy. Validation has only seven positive images and test only five; report raw counts alongside percentages.
-
-Separate CEPDOF ordinary-box and OBB preparation/training experiments were also explored. The ordinary-box run was reported to reach a best mAP50-95 of 0.5235 at epoch 83, after which keeping the best checkpoint was recommended. This is an experimental person-detector result, not an end-to-end staff-detection score; verify against its saved logs before citing it in the report.
-
-### Dataset path troubleshooting
-
-Moving or renaming a dataset folder does not update paths inside `tag_data.yaml`. The earlier `tag_dataset_balanced_v1.2` training error still pointed internally at `tag_dataset_balanced_v2/images/val`.
-
-Ensure the YAML `path` points to the actual dataset root on the current computer and that `train`, `val`, and `test` resolve to existing image folders. An absolute root using forward slashes avoids ambiguity between machines; update it when moving the project. Changing the global Ultralytics download directory is not the fix for a stale dataset root.
-
-The `tools/` folder is intended to be tracked by Git. Dataset images, labels, videos, model weights and generated outputs remain local unless the repository policy is changed deliberately. Do not regenerate or overwrite accepted datasets merely to write the report.
+| Positive expansion, balanced v1.1 | 43 positive + 172 negative | Unchanged | Unchanged |
+| Negative expansion, balanced v1.2 | 43 positive + 189 negative | Unchanged | Unchanged |
 
 ## Important limitation
 
-The accepted result is a proof of concept. It is not guaranteed to detect every staff occurrence or generalize to an unknown interview video. Training on one scene can still learn scene-specific cues even when using a tag detector.
+The accepted result is a proof of concept. It is not guaranteed to detect every staff occurrence or generalize to an unknown video. 
 
 Occlusion, changing appearance, tiny people near image edges and hidden tags can cause missed detections or new IDs. Better person detection, better tag detection and better tracking address different parts of this problem. Temporal holding reduces short gaps but can retain incorrect status after an ID transfer; stricter tag thresholds can reduce false positives while increasing missed staff periods.
 
-The current pipeline exports bottom-centre coordinates and staff-occurrence rows, but remains one-pass: it cannot annotate or export earlier frames retrospectively after later staff confirmation. Missing detections and unconfirmed IDs also produce no staff rows. Consequently, CSV export alone does not guarantee that every true staff occurrence is captured. Two-pass recovery remains deferred.
-
-For report writing, use the frozen main script and accepted output as the implemented system. Separate experimental branches and proposed features from completed work. Preserve the final command, selected weights, tracker configuration, dataset manifests and actual evaluation logs. Final v1.2 metrics, final dataset counts and the exact local repository inventory still need those local records; do not substitute the subjective 80/100 assessment.
-
-For a future Codex session, provide this README, the engineering notes and relevant experiment logs in the repository, then ask it to read them before working. Treat the latest code and recorded run configuration as authoritative when older chat recommendations differ. Development remains frozen unless explicitly reopened.
+The current pipeline exports bottom-centre coordinates and staff-occurrence rows, but remains one-pass: it cannot annotate or export earlier frames retrospectively after later staff confirmation. Missing detections and unconfirmed IDs also produce no staff rows. Consequently, CSV export alone does not guarantee that every true staff occurrence is captured. Two-pass recovery remains deferred due to current detection and tracking performance is not reliable enough, with the same person frequently receiving different tracking IDs.
