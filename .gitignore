@@ -31,6 +31,7 @@ yoloModel/best_CEPDOF_v1.0.pt
 tools/audit_tag_dataset.py
 tools/train_model_v1.0.py
 
+temp
 configs
 yolo26n-cls.pt
 runs
