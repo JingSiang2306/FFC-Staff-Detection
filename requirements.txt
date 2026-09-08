@@ -4,4 +4,5 @@ torch==2.13.0
 torchvision==0.28.0
 ultralytics==8.4.138
 opencv-python==5.0.0.93
+lap==0.5.13
 albumentations

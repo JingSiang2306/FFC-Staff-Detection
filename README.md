@@ -29,7 +29,7 @@ Use the existing working virtual environment when reproducing the accepted resul
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 Put the video at `data/sample.mp4`, provide both trained weights in `yoloModel/`, and retain `trackers/custom_bytetrack.yaml`. A CUDA-capable GPU also needs a compatible CUDA-enabled PyTorch installation; otherwise `auto` uses the CPU.
